@@ -3,12 +3,13 @@ import numpy as np
 
 # World Bank Data
 df_social_progress_index = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx', sheet_name='Social Progress Index')
-df_final = pd.read_excel('.\\Data\\Final df.xlsx')
 df_basic_human_needs = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx', sheet_name='Basic Human Needs')
 df_foundations_of_wellbeing = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx',
                                             sheet_name='Foundations of Wellbeing')
 df_opportunity = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx', sheet_name='Opportunity')
 
+df_final = pd.read_excel('.\\Data\\Final df.xlsx')
+df_final.iloc[:, 5] = df_final.iloc[:, 5]*100
 data_2016 = pd.read_csv('.\\Data\\cost-of-living-2016.csv')
 data_2017 = pd.read_csv('.\\Data\\cost-of-living-2017.csv')
 data_2018 = pd.read_csv('.\\Data\\cost-of-living-2018.csv')
@@ -118,8 +119,8 @@ for dataframe in df_countries:
     df = pd.merge(df, dataframe, how='outer', on='Country')
 
 
-df.columns = ['Country', 'Basic Human Needs','Data Scientist salary', 'Foundations of wellbeing', 'HDI', 'Opportunity',
-               'Social Progress Index', 'Temperature', 'Wage', 'Cost of living', 'Groceries', 'Rent',
+df.columns = ['Country', 'Basic Human Needs','Data Scientist Salary', 'Foundations of Wellbeing', 'HDI', 'Opportunity',
+               'Social Progress Index', 'Temperature', 'Wage', 'Cost of Living', 'Groceries', 'Rent',
                'Happiness Score']
 
 

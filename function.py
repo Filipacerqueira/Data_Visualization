@@ -73,7 +73,32 @@ tab1_layout = html.Div(
     ],
 )
 
-
+############## Tab2 #################
+tab2_layout = html.Div(children=[
+    html.Div([
+        html.Div(id='tabContainer2', className='tabs1', children=[
+            html.Div(id='tab2_1',
+                     children=[html.Div(className='control-tab', id='description2', children=[
+                         html.H4(id='title2_1', children=['Which factors matter the most when going abroad?']),
+                         html.P(
+                             'Now that we already know what each variable represents, it´s important to understand what\
+                              countries have the best values for each one of them. Choose one of the following variables\
+                               and take a closer look at the Top 5 countries with the highest values.',
+                                 id='description2_1', className='description'),
+                         html.Div(id='tab2_2',
+                                  children=[dcc.Dropdown(id='dropdown_tab2',options=variable_options, value='Data Scientist Salary', clearable=False)]
+                                  )]
+                                        )])]
+                 )],
+    style={'width': '49%', 'display': 'inline-block', 'vertical-align': 'middle'}, className='row flex-display'),\
+              html.Div([
+                  html.Div(
+                      children=[dcc.Graph(id='barGraph')],
+                      id='bargraph', className='tabs1'
+                  )],
+                  style={'width': '49%', 'display': 'inline-block', 'vertical-align': 'middle'}, className='ta',
+    id="mainContainer2")
+    ])
 
  ################################################################################################################
 app.layout = html.Div([
@@ -94,14 +119,14 @@ app.layout = html.Div([
                  # html.Br(),
                  html.P(id="title-one-globe", children=['PLANNING ON GOING ABROAD?']),
                  html.Br(),
-                 dcc.Tabs(id='big-tabs', value='what-is', className='tabs', children=[
+                 dcc.Tabs(id='big-tabs', value='tab1', className='tabs', children=[
                      dcc.Tab(id='tab1',
                              label='World',
                              children=[tab1_layout]
                              ),
                      dcc.Tab(id='tab2',
                              label='Features',
-                             children=[]
+                             children=[tab2_layout]
                              ),
                      dcc.Tab(id='tab3',
                              label='Countries',
@@ -112,21 +137,28 @@ app.layout = html.Div([
                                          [
                                              html.Div(
                                                  [
+                                                     html.Br(),
                                                      html.Label('About', id='title1',
                                                                 className="title"),
                                                      html.P(
-                                                         "When moving to a new place there are many"
-                                                         " different factors to consider."
-                                                         "In this tab you can compare this factors "
+                                                         "When moving to a new place, there are many"
+                                                         " different factors to consider. "
+                                                         "In this tab you can compare these factors "
                                                          "by choosing which countries you want to know "
                                                          "the information about."
-                                                         "If you’re interested you can also see their "
+                                                         "If you’re interested, you can also see their "
                                                          "gender wage gap evolution over time.",
                                                          id='description',
                                                          className="description",
                                                      ),
                                                      html.Br(),
-                                                     html.Label('Select your Countries here'),
+                                                     html.Label('Select your Countries here',
+                                                                style={'font-size':'0.9rem',
+                                                                       'colour': '#e0e0eb',
+                                                                       'margin-right': '2rem',
+                                                                       'margin-left': '2rem',
+                                                                       'line-height':'2rem'
+                                                                       }),
                                                      dcc.Dropdown(
                                                          id='country_drop',
                                                          options=country_options,
@@ -135,7 +167,12 @@ app.layout = html.Div([
                                                          className='drown'
                                                      ),
                                                      html.Br(),
-                                                     html.Label('Year Range'),
+                                                     html.Label('Select a year range',
+                                                                style={'margin-right': '2rem',
+                                                                       'margin-left': '2rem',
+                                                                       'font-size':'0.9rem',
+                                                                       'colour':'#e0e0eb'}
+                                                                ),
                                                      dcc.RangeSlider(
                                                          id='year_slider',
                                                          min=2006,
@@ -145,7 +182,7 @@ app.layout = html.Div([
                                                                  2015, 2016, 2017]},
                                                          value=[2006, 2017],
                                                          step=1,
-                                                         className="dcc_control",
+                                                         className="dcc_control"
                                                      ),
                                                  ],
                                                  className="pretty_container four columns",
@@ -157,21 +194,25 @@ app.layout = html.Div([
                                                          [
                                                              html.Div(
                                                                  [html.H6(id="happiness"),
-                                                                  html.P("World Happiness Score"), html.P("5.38 /10")],
+                                                                  html.P("World Happiness Score"), html.P("5.38 /10",
+                                                                                                          style = {'font-weight': 'bold'
+                                                                                                          })],
                                                                  id="hap_score",
                                                                  className="mini_container",
                                                              ),
                                                              html.Div(
                                                                  [html.H6(id="cosliving"),
                                                                   html.P("World Cost of Living Index"),
-                                                                  html.P("63.65%")],
+                                                                  html.P("63.65%", style = {'font-weight': 'bold'
+                                                                                            })],
                                                                  id="cli",
                                                                  className="mini_container",
                                                              ),
                                                              html.Div(
                                                                  [html.H6(id="DS_sal"),
                                                                   html.P("World Annual Data Scientists' Salary"),
-                                                                  html.P("$ 57576")],
+                                                                  html.P("$ 57576", style = {'font-weight': 'bold'
+                                                                                            })],
                                                                  id="salary",
                                                                  className="mini_container",
                                                              ),
@@ -216,7 +257,7 @@ app.layout = html.Div([
                                      ),
                                  ],
                                      id="mainContainer",
-                                     style={"display": "flex", "flex-direction": "column"}
+                                     style={"justify-content": "center"}
                                  )
 
                              ]
@@ -259,7 +300,7 @@ def plots(year, countries):
     for country in countries:
         df_sct = df.loc[(df['Country'] == country)]
 
-        x_sct = df_sct['Data Scientist salary']
+        x_sct = df_sct['Data Scientist Salary']
         y_sct = df_sct['Happiness Score']
         siz = df_sct['Opportunity']
 
@@ -278,7 +319,7 @@ def plots(year, countries):
     for country in countries:
         df_bar = df.loc[(df['Country'] == country)]
 
-        y = df_bar[['Cost of living', 'Groceries', 'Rent']].values[0]
+        y = df_bar[['Cost of Living', 'Groceries', 'Rent']].values[0]
 
         x0 = ['Cost of Living', 'Groceries', 'Rent']
         data_bar.append(dict(type='bar', x=x0, y=y,
@@ -287,31 +328,53 @@ def plots(year, countries):
         layout_bar = dict(title=dict(text='How expensive is it to live here?'),
                           template="plotly_dark")
     ####################################################################################################################
-    x1 = df_final[['Opportunity']]
-    x2 = df_final[['Basic Human Needs']]
-    x3 = df_final[['Foundations of wellbeing']]
+    x_dot1 = []
+    x_dot2 = []
+    x_dot3 = []
+    x_dot4 = []
+    y_dot = []
+    data_dot = []
 
-    trace1 = go.Funnel(
-        name='Opportunity',
-        orientation="h",
-        y=countries, x=x1)
+    for country in countries:
+        df_dot = df_final.loc[(df_final['Country'] == country)]
+        x_dot1.append(list(df_dot['Basic Human Needs'])[0])
+        x_dot2.append(list(df_dot['Foundations of wellbeing'])[0])
+        x_dot3.append(list(df_dot['Social Progress Index'])[0])
+        x_dot4.append(list(df_dot['HDI'])[0])
 
-    trace2 = go.Funnel(
-        name='Basic Human Needs',
-        orientation="h",
-        y=countries, x=x2)
+    y_dot = countries
+    x = [x_dot1, x_dot2, x_dot3, x_dot4]
+    colors = ['#1798AF', '#4A52B4', '#7C4AB4', '#AC402E']
+    names = ['Basic Human Needs', 'Foundations of wellbeing', 'Social Progress Index', 'HDI']
 
-    trace3 = go.Funnel(
-        name='Foundations of Wellbeing',
-        orientation="h",
-        y=countries, x=x3)
+    for i in range(len(x)):
+        data_dot.append(dict(type='scatter', mode='markers', x=x[i], y=y_dot,
+                             name=names[i], marker=dict(color=colors[i], line_width=1, symbol='circle', size=16)))
 
-    layout = go.Layout(margin={"l": 200, "r": 200}, funnelmode="stack", showlegend=True, template="plotly_dark")
+    layout_dot = dict(title="Countries' Indexes",
+                      xaxis=dict(
+                          showgrid=False,
+                          showline=True,
+                          linecolor='rgb(102, 102, 102)',
+                          tickfont_color='rgb(102, 102, 102)',
+                          showticklabels=True,
+                          tick0=0,
+                          ticks='outside',
+                          tickcolor='rgb(102, 102, 102)',
+                      ),
+                      legend=dict(
+                          font_size=10,
+                          x=-0.5,
+                          y=-0.5,
+                      ),
+                      template="plotly_dark",
+                      )
+
 
     return go.Figure(data=data_line, layout=layout_line), \
            go.Figure(data=data_scatter, layout=layout_sct),\
            go.Figure(data=data_bar, layout=layout_bar), \
-           go.Figure([trace1, trace2, trace3], layout),
+           go.Figure(data=data_dot, layout=layout_dot),
 
 
 
@@ -390,6 +453,26 @@ def variable_description(value):
      with various life factors']
 
     return variable_descriptions[df_colnames.index(str(value))-1]
+
+# Callback for the bar chart in tab2
+@app.callback(Output("barGraph", "figure"), [Input("dropdown_tab2", "value")])
+
+def plot_tab2(var):
+    data_bar = []
+
+    df_bar = df.sort_values(by=[str(var)], ascending=False).iloc[0:5]
+
+    x_bar = df_bar[str(var)]
+    y_bar = df_bar['Country']
+
+    data_bar.append(dict(type='bar', x=x_bar, y=y_bar, name=var, orientation='h', marker=dict(
+        color=['#05946E',	'#1798AF', '#4A52B4',	'#7C4AB4',	 '#AC402E'])))
+
+    layout_bar = dict(title=dict(text='Top 5 Countries for ' + str(var), x=.5, ), template="plotly_dark"
+                      )
+    fig = go.Figure(data=data_bar, layout=layout_bar)
+    return fig
+
 
 
 if __name__ == '__main__':
