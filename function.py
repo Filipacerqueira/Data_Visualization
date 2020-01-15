@@ -121,6 +121,7 @@ app.layout = html.Div([
                  html.Br(),
                  dcc.Tabs(id='big-tabs', value='tab1', className='tabs', children=[
                      dcc.Tab(id='tab1',
+                             value='tab1',
                              label='World',
                              children=[tab1_layout]
                              ),
@@ -146,7 +147,7 @@ app.layout = html.Div([
                                                          "In this tab you can compare these factors "
                                                          "by choosing which countries you want to know "
                                                          "the information about."
-                                                         "If you’re interested, you can also see their "
+                                                         " If you’re interested, you can also see their "
                                                          "gender wage gap evolution over time.",
                                                          id='description',
                                                          className="description",
@@ -162,7 +163,7 @@ app.layout = html.Div([
                                                      dcc.Dropdown(
                                                          id='country_drop',
                                                          options=country_options,
-                                                         value=['Portugal'],
+                                                         value=['Portugal', 'United Kingdom', 'Italy','Indonesia'],
                                                          multi=True,
                                                          className='drown'
                                                      ),
@@ -285,7 +286,7 @@ def plots(year, countries):
     data_line = []
     for country in countries:
         df_line = df_wage1.loc[(df_wage1['Country'] == country)]
-        x_line = df_line['Year']
+        x_line = [int(i) for i in range(year[0], year[1]+1, 1)]
         y_line = df_line['Wage']
 
         data_line.append(dict(type='scatter', mode='lines', x=x_line, y=y_line, name=country))
