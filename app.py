@@ -7,7 +7,6 @@ import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 
-
 # IMPORTING DATA
 # World Bank Data
 df_social_progress_index = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx', sheet_name='Social Progress Index')
@@ -17,7 +16,7 @@ df_foundations_of_wellbeing = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx'
 df_opportunity = pd.read_excel('.\\Data\\2014-2019-SPI-Public.xlsx', sheet_name='Opportunity')
 
 df_final = pd.read_excel('.\\Data\\Final df.xlsx')
-df_final.iloc[:, 5] = df_final.iloc[:, 5]*100
+df_final.iloc[:, 5] = df_final.iloc[:, 5] * 100
 data_2016 = pd.read_csv('.\\Data\\cost-of-living-2016.csv')
 data_2017 = pd.read_csv('.\\Data\\cost-of-living-2017.csv')
 data_2018 = pd.read_csv('.\\Data\\cost-of-living-2018.csv')
@@ -102,46 +101,39 @@ df_wage1 = df_wage.melt(id_vars='Country',
 
 df_happiness_score = pd.read_excel('.\\Data\\Hapiness Score.xlsx')
 
-
 # Joining all dataframes
 df_cost_living_mean = df_cost_living.set_index('Country').groupby(level='Country').mean().reset_index()
 df_groceries_mean = df_groceries.set_index('Country').groupby(level='Country').mean().reset_index()
 df_rent_mean = df_rent.set_index('Country').groupby(level='Country').mean().reset_index()
 
+df_countries = [df_data_scientist_salary, df_foundations_of_wellbeing.loc[:, ['Country', 2018]],
+                df_hdi, df_opportunity.loc[:, ['Country', 2018]],
+                df_social_progress_index.loc[:, ['Country', 2018]], df_temperature, df_wage.loc[:, ['Country', '2017']],
+                df_cost_living_mean.loc[:, ['Country', 'CLI_18']], df_groceries_mean.loc[:, ['Country', 'G_18']],
+                df_rent_mean.loc[:, ['Country', 'R_18']], df_happiness_score.loc[:, ['Country', 2018]]]
+# falta precipitation
 
-df_countries = [df_data_scientist_salary, df_foundations_of_wellbeing.loc[:,['Country', 2018]],
-                df_hdi, df_opportunity.loc[:,['Country', 2018]],
-                df_social_progress_index.loc[:,['Country', 2018]], df_temperature, df_wage.loc[:,['Country', '2017']],
-                df_cost_living_mean.loc[:,['Country','CLI_18']], df_groceries_mean.loc[:,['Country','G_18']],
-                df_rent_mean.loc[:,['Country','R_18']], df_happiness_score.loc[:,['Country',2018]]]
-                # falta precipitation
-
-df = df_basic_human_needs.loc[:,['Country', 2018]]
+df = df_basic_human_needs.loc[:, ['Country', 2018]]
 
 for dataframe in df_countries:
     cols = dataframe.columns
     if 'Code' in cols:
         dataframe = dataframe.drop(columns='Code')
     if 'Country Name' in cols:
-        dataframe = dataframe.rename(columns={'Country Name':'Country'})
+        dataframe = dataframe.rename(columns={'Country Name': 'Country'})
     df = pd.merge(df, dataframe, how='outer', on='Country')
 
-
-df.columns = ['Country', 'Basic Human Needs','Data Scientist Salary', 'Foundations of Wellbeing', 'HDI', 'Opportunity',
-               'Social Progress Index', 'Temperature', 'Wage', 'Cost of Living', 'Groceries', 'Rent',
-               'Happiness Score']
-
+df.columns = ['Country', 'Basic Human Needs', 'Data Scientist Salary', 'Foundations of Wellbeing', 'HDI', 'Opportunity',
+              'Social Progress Index', 'Temperature', 'Wage', 'Cost of Living', 'Groceries', 'Rent',
+              'Happiness Score']
 
 del all_data, countries_complete, data_2018, data_2017, data_2016, city, country, i, temp_data, value, index, row, dataframe
-###################### Data Processing ###################################################################
-
-#mudar no scatter o happiness score bem
-#meter no mini container do salario o salario anual para estar coerente com o grafico
-
-#################################################################################################################
 
 country_options = [dict(label=country, value=country) for country in df_opportunity.iloc[:, 0].unique()]
 
+
+
+######################################################## APP ##########################################################
 app = dash.Dash(__name__)
 
 # Functions for the first tab
@@ -156,15 +148,14 @@ dropdown_globe = dcc.Dropdown(
     clearable=False
 )
 
-
-title_two_globe = html.H1(id="title-two-globe", children="About") # satellite_title, id = satellite-name
+title_two_globe = html.H1(id="title-two-globe", children="About")  # satellite_title, id = satellite-name
 
 globe_description = html.P(
-    className="globe-description", id="globe-description", children="""This Dashboard offers you the possibility of comparing various countries in the world,\
-    regarding multiple aspects that may peak your interest, while exploring your possibilities when moving abroad. Especially if you're interested in the area of Data\
-    Science, it helps you to weigh your options and make the best decision. Start by choosing a variable you want to display on our globe!"""
+    className="globe-description", id="globe-description", children="""This Dashboard offers you the possibility of \
+    comparing various countries in the world,regarding multiple aspects that may peak your interest, while exploring \
+    your possibilities when moving abroad. Especially if you're interested in the area of Data Science, it helps you \
+    to weigh your options and make the best decision. Start by choosing a variable you want to display on our globe!"""
 )
-
 
 side_panel_layout = html.Div(
     id="panel-side",
@@ -176,13 +167,12 @@ side_panel_layout = html.Div(
     ],
 )
 
-
 globe_body = html.Div(
     id='globe-body',
     children=[
 
         dcc.Graph(
-        id='globe-graph',
+            id='globe-graph',
         )
     ],
 )
@@ -191,8 +181,8 @@ globe_body = html.Div(
 tab1_layout = html.Div(
     id="root",
     children=[
-        side_panel_layout, # side_panel_layout
-        globe_body, # main_panel_layout
+        side_panel_layout,  # side_panel_layout
+        globe_body,  # main_panel_layout
     ],
 )
 
@@ -207,38 +197,39 @@ tab2_layout = html.Div(children=[
                              'Now that we already know what each variable represents, it´s important to understand what\
                               countries have the best values for each one of them. Choose one of the following variables\
                                and take a closer look at the Top 5 countries with the highest values.',
-                                 id='description2_1', className='description'),
+                             id='description2_1', className='description'),
                          html.Div(id='tab2_2',
-                                  children=[dcc.Dropdown(id='dropdown_tab2',options=variable_options, value='Data Scientist Salary', clearable=False)]
+                                  children=[dcc.Dropdown(id='dropdown_tab2', options=variable_options,
+                                                         value='Data Scientist Salary', clearable=False)]
                                   )]
                                         )])]
                  )],
-    style={'width': '49%', 'display': 'inline-block', 'vertical-align': 'middle'}, className='row flex-display'),\
-              html.Div([
-                  html.Div(
-                      children=[dcc.Graph(id='barGraph')],
-                      id='bargraph', className='tabs1'
-                  )],
-                  style={'width': '49%', 'display': 'inline-block', 'vertical-align': 'middle'}, className='ta',
-    id="mainContainer2")
-    ])
+        style={'width': '49%', 'display': 'inline-block', 'vertical-align': 'middle'}, className='row flex-display'),
+    html.Div([
+        html.Div(
+            children=[dcc.Graph(id='barGraph')],
+            id='bargraph', className='tabs1'
+        )],
+        style={'width': '49%', 'display': 'inline-block', 'vertical-align': 'middle'}, className='ta',
+        id="mainContainer2")
+])
 
- ################################################################################################################
+################################################################################################################
 app.layout = html.Div([
     html.Div(id='control_tabs', className='control-tabs',
              children=[
-                # Code for header layout
-                html.Div([
-                        html.Img(
-                            src=app.get_asset_url("IMS_logo.png"),
-                            id="plotly-image",
-                            style={
-                                "height": "100px",
-                                "width": "100px",
-                                "margin-bottom": "0px",
-                            },
-                        )
-                    ]),
+                 # Code for header layout
+                 html.Div([
+                     html.Img(
+                         src=app.get_asset_url("IMS_logo.png"),
+                         id="plotly-image",
+                         style={
+                             "height": "100px",
+                             "width": "100px",
+                             "margin-bottom": "0px",
+                         },
+                     )
+                 ]),
                  # html.Br(),
                  html.P(id="title-one-globe", children=['PLANNING ON GOING ABROAD?']),
                  html.Br(),
@@ -277,16 +268,16 @@ app.layout = html.Div([
                                                      ),
                                                      html.Br(),
                                                      html.Label('Select your Countries here',
-                                                                style={'font-size':'0.9rem',
+                                                                style={'font-size': '0.9rem',
                                                                        'colour': '#e0e0eb',
                                                                        'margin-right': '2rem',
                                                                        'margin-left': '2rem',
-                                                                       'line-height':'2rem'
+                                                                       'line-height': '2rem'
                                                                        }),
                                                      dcc.Dropdown(
                                                          id='country_drop',
                                                          options=country_options,
-                                                         value=['Portugal', 'United Kingdom', 'Italy','Indonesia'],
+                                                         value=['Portugal', 'United Kingdom', 'Italy', 'Indonesia'],
                                                          multi=True,
                                                          className='drown'
                                                      ),
@@ -294,8 +285,8 @@ app.layout = html.Div([
                                                      html.Label('Select a year range',
                                                                 style={'margin-right': '2rem',
                                                                        'margin-left': '2rem',
-                                                                       'font-size':'0.9rem',
-                                                                       'colour':'#e0e0eb'}
+                                                                       'font-size': '0.9rem',
+                                                                       'colour': '#e0e0eb'}
                                                                 ),
                                                      dcc.RangeSlider(
                                                          id='year_slider',
@@ -319,24 +310,27 @@ app.layout = html.Div([
                                                              html.Div(
                                                                  [html.H6(id="happiness"),
                                                                   html.P("World Happiness Score"), html.P("5.38 /10",
-                                                                                                          style = {'font-weight': 'bold'
-                                                                                                          })],
+                                                                                                          style={
+                                                                                                              'font-\
+                                                                                                              weight': \
+                                                                                                                  'bold'
+                                                                                                              })],
                                                                  id="hap_score",
                                                                  className="mini_container",
                                                              ),
                                                              html.Div(
                                                                  [html.H6(id="cosliving"),
                                                                   html.P("World Cost of Living Index"),
-                                                                  html.P("63.65%", style = {'font-weight': 'bold'
-                                                                                            })],
+                                                                  html.P("63.65%", style={'font-weight': 'bold'
+                                                                                          })],
                                                                  id="cli",
                                                                  className="mini_container",
                                                              ),
                                                              html.Div(
                                                                  [html.H6(id="DS_sal"),
                                                                   html.P("World Annual Data Scientists' Salary"),
-                                                                  html.P("$ 57576", style = {'font-weight': 'bold'
-                                                                                            })],
+                                                                  html.P("$ 57576", style={'font-weight': 'bold'
+                                                                                           })],
                                                                  id="salary",
                                                                  className="mini_container",
                                                              ),
@@ -409,7 +403,7 @@ def plots(year, countries):
     data_line = []
     for country in countries:
         df_line = df_wage1.loc[(df_wage1['Country'] == country)]
-        x_line = [int(i) for i in range(year[0], year[1]+1, 1)]
+        x_line = [int(i) for i in range(year[0], year[1] + 1, 1)]
         y_line = df_line['Wage']
 
         data_line.append(dict(type='scatter', mode='lines', x=x_line, y=y_line, name=country))
@@ -431,7 +425,8 @@ def plots(year, countries):
         data_scatter.append(dict(type='scatter', mode='markers', x=x_sct, y=y_sct,
                                  name=country, marker=dict(size=siz),
                                  hovertemplate='Data Scientists Salary: %{x}$ <br>' +
-                                               'Happiness Score Index: %{y}% <br>' + 'Opportunity Index: %{marker.size}%'))
+                                               'Happiness Score Index: %{y}% <br>' + 'Opportunity Index:\
+                                                %{marker.size}%'))
 
         layout_sct = dict(title=dict(text='Happiness Score and Opportunity Index by DS Salary'),
                           yaxis=dict(title='Happiness Score'),
@@ -469,7 +464,7 @@ def plots(year, countries):
     y_dot = countries
     x = [x_dot1, x_dot2, x_dot3, x_dot4]
     colors = ['#1798AF', '#4A52B4', '#7C4AB4', '#AC402E']
-    names = ['Basic Human Needs', 'Foundations of wellbeing', 'Social Progress Index', 'HDI']
+    names = ['Basic Human Needs', 'Foundations of Wellbeing', 'Social Progress Index', 'HDI']
 
     for i in range(len(x)):
         data_dot.append(dict(type='scatter', mode='markers', x=x[i], y=y_dot,
@@ -494,12 +489,10 @@ def plots(year, countries):
                       template="plotly_dark",
                       )
 
-
     return go.Figure(data=data_line, layout=layout_line), \
-           go.Figure(data=data_scatter, layout=layout_sct),\
+           go.Figure(data=data_scatter, layout=layout_sct), \
            go.Figure(data=data_bar, layout=layout_bar), \
            go.Figure(data=data_dot, layout=layout_dot),
-
 
 
 # Callbacks for the first tab
@@ -510,8 +503,7 @@ def plots(year, countries):
         Input("dropdown-globe", "value"),
     ],
 )
-
-def update_globe_body(variable): # update_word_map
+def update_globe_body(variable):  # update_word_map
     data_choropleth = dict(type='choropleth',
                            locations=df['Country'],
                            locationmode='country names',
@@ -524,7 +516,7 @@ def update_globe_body(variable): # update_word_map
                                    color='#cdecf2'
                                ),
                                title=dict(
-                                   text='Scale of '+str(variable),
+                                   text='Scale of ' + str(variable),
                                    font=dict(
                                        color='#cdecf2'))))
 
@@ -550,37 +542,37 @@ def update_globe_body(variable): # update_word_map
 
     return fig
 
+
 # Returns a description of the variable selected in dropdown-globe
 @app.callback(
     Output('dropdown-variable-description', 'children'),
     [Input('dropdown-globe', 'value')])
-
 def variable_description(value):
     df_colnames = [i for i in df.columns]
-    variable_descriptions =    ['Basic Human Needs is an Index that combines multiple factors regarding Nutrition and \
-    Basic Medical Care, Water and Sanitation, Shelter and Personal Safety.','Data Scientists salary refers to the \
-    average gross Anual Compensation of someone working in the area of Data Science', 'Foundations of Wellbeing is an \
+    variable_descriptions = ['Basic Human Needs is an Index that combines multiple factors regarding Nutrition and \
+    Basic Medical Care, Water and Sanitation, Shelter and Personal Safety.', 'Data Scientists salary refers to the \
+    average gross Annual Compensation of someone working in the area of Data Science', 'Foundations of Wellbeing is an \
     Index that is mainly focused on the Access to Basic Knowledge, Access to Information and Communications, Health and\
      Wellness and Environmental Quality.', 'The Human Development Index is about emphasizing that people and their \
      capabilities should be the ultimate criteria for assessing the development of a country, not economic growth alone. \
      It includes a Life expectancy Index, Education Index and GNI Index.', 'Opportunity is an Index that includes \
      Personal Rights, Personal Freedom and Choice, Inclusiveness and Access to Advanced Education.', 'Social Progress \
      Index joins the Basic Human Needs, Foundations of Wellbeing and Opportunity Indices into one.', 'Temperature is the \
-     average minimal(mean) and maximal(mean) temperature of a country.','Wage is an Index that refers to the unadjusted \
+     average minimal(mean) and maximal(mean) temperature of a country.', 'Wage is an Index that refers to the unadjusted \
      Gender Pay Gap (GPG) and represents the difference between average gross hourly earnings of male paid employees and \
      of female paid employees as a percentage of average gross hourly earnings of male paid employees', 'Cost of living \
      is an Index regarding the overall estimation of living in a country, including every necessary expenses one can \
      have.', 'Groceries is an Index regarding the average princes for groceries in a country.', 'The Rent Index refers \
-     to the average cost of renting an apartment in a country','Happiness Score by the The World Happiness Report is an \
+     to the average cost of renting an apartment in a country', 'Happiness Score by the The World Happiness Report is an \
      annual publication of the United Nations Sustainable Development Solutions Network. It contains articles, and \
      rankings of national happiness based on respondent ratings of their own lives, which the report also correlates \
      with various life factors']
 
-    return variable_descriptions[df_colnames.index(str(value))-1]
+    return variable_descriptions[df_colnames.index(str(value)) - 1]
+
 
 # Callback for the bar chart in tab2
 @app.callback(Output("barGraph", "figure"), [Input("dropdown_tab2", "value")])
-
 def plot_tab2(var):
     data_bar = []
 
@@ -590,12 +582,13 @@ def plot_tab2(var):
     y_bar = df_bar['Country']
 
     data_bar.append(dict(type='bar', x=x_bar, y=y_bar, name=var, orientation='h', marker=dict(
-        color=['#05946E',	'#1798AF', '#4A52B4',	'#7C4AB4',	 '#AC402E'])))
+        color=['#05946E', '#1798AF', '#4A52B4', '#7C4AB4', '#AC402E'])))
 
     layout_bar = dict(title=dict(text='Top 5 Countries for ' + str(var), x=.5, ), template="plotly_dark"
                       )
     fig = go.Figure(data=data_bar, layout=layout_bar)
     return fig
+
 
 server = app.server
 
