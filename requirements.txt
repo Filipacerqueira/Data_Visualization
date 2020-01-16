@@ -23,6 +23,3 @@ Werkzeug==0.16.0
 wincertstore==0.2
 xlrd==1.2.0
 
-mkl-fft
-mkl-random
-mkl-service
