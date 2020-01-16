@@ -3,7 +3,6 @@ gunicorn>=19.7.1
 google-cloud-firestore
 
 alabaster==0.7.12
-anaconda-project==0.8.3
 asn1crypto==0.24.0
 astroid==2.2.5
 astropy==3.2.1
